@@ -15,27 +15,88 @@ try {
     $vtelefono = $_POST['telefono'];
     $vdireccion = $_POST['direccion'];
     $vciudad_nacimiento = $_POST['ciudad_nacimiento'] ?? '';
+    
     if (empty($vciudad_nacimiento)) {
         die("Error: No se recibió una ciudad de nacimiento válida. Verifique que haya ciudades en la tabla 'ciudad' y que haya seleccionado una.");
     }
     $vgenero = $_POST['genero'];
 
-    // Fechas automáticas
+    // Fechas automáticas (asignadas por el sistema)
+    // Se usa 'Y-m-d H:i:s' para guardar Fecha y Hora. Si solo necesitas fecha usa 'Y-m-d'
+    $vfecha_creacion = date('Y-m-d H:i:s');
+    $vfecha_actualizacion = date('Y-m-d H:i:s');
 
-    
-    $vfecha_actualizacion =  $_POST['fecha_actualizacion'];
-    // date('Y-m-d H:i:s');
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['foto'])) {
 
-    $vfecha_creacion=$_POST['fecha_creacion_usuario'];
-    
-    //= date('Y-m-d H:i:s');
+        // Ruta para guardar el archivo de foto física
+        $target_dir = "C:/xampp/htdocs/img/";
 
-    // Foto por defecto
-    $vfoto = 'foto';
+        // Concateno con el nombre del archivo
+        // para guardar el archivo físico
+        $target_file = $target_dir . basename($_FILES["foto"]["name"]);
+
+
+        // Ruta para guardar en el registro de la base de datos
+        $foto_guardar = "http://localhost/img/";
+
+        // Concateno con el nombre para guardar en la base de datos
+        $target_file1 = $foto_guardar . basename($_FILES["foto"]["name"]);
+
+
+        // ==========================================
+        // VERIFICAR QUE SEA UNA IMAGEN
+        // ==========================================
+
+        $check = getimagesize($_FILES["foto"]["tmp_name"]);
+
+        if ($check === false) {
+            echo "El archivo no es una imagen.";
+            exit;
+        }
+
+
+        // ==========================================
+        // VERIFICAR TAMAÑO
+        // ==========================================
+
+        if ($_FILES["foto"]["size"] > 5000000) {
+            echo "El archivo es demasiado grande.";
+            exit;
+        }
+
+
+        // ==========================================
+        // MOVER EL ARCHIVO
+        // ==========================================
+
+        if (move_uploaded_file($_FILES["foto"]["tmp_name"], $target_file)) {
+
+            $foto_path = $target_file;
+
+            echo "El archivo se ha subido correctamente: " . $foto_path;
+
+        } else {
+
+            echo "Hubo un error al subir el archivo.";
+            exit;
+
+        }
+
+    } else {
+
+        echo "No se seleccionó ninguna foto.";
+        exit;
+
+    }
+
+
+    // ==========================================
+    // FOTO QUE SE GUARDARÁ EN MYSQL
+    // ==========================================
+
+    $vfoto = $target_file1;
 
     // Iniciar sesión
-
-
     $_SESSION['usuario'] = $videntificacion;
     $_SESSION['tipo_persona'] = $vtipo_per;
     $_SESSION['id'] = $videntificacion;

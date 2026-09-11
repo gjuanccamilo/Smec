@@ -333,9 +333,7 @@
             echo "Fallo la conexion ".$e->getMessage();
         }
 
-        // --- NOTA: Se eliminó el session_unset() para mantener la sesión del administrador activa ---
-
-        echo '<form action="insertar_registrese.php" method="POST">';
+        echo '<form action="insertar_registrese.php" method="POST" enctype="multipart/form-data">';
         echo "<label for='identificacion'>Identificacion:</label>";
         echo "<input type='text' id='identificacion' name='identificacion' value=''><br><br>";
         echo "<br>";
@@ -350,9 +348,6 @@
         echo "<br>";
         echo "<label for='fecha_nacimiento'>Fecha de nacimiento:</label>";
         echo "<input type='date' id='fecha_nacimiento' name='fecha_nacimiento' value=''><br><br>";
-        echo "<br>";
-        echo "<label for='fecha_creacion_usuario'>Fecha de creacion del usuario:</label>";
-        echo "<input type='date' id='fecha_creacion_usuario' name='fecha_creacion_usuario' value=''><br><br>";
         echo "<br>";
         echo "<label for='telefono'>Telefono:</label>";
         echo "<input type='text' id='telefono' name='telefono' value=''><br><br>";
@@ -382,10 +377,6 @@
         echo "<br>";
         echo "<input type='file' id='foto' name='foto' value=''><br><br>";
         echo "<br>";
-        echo "<label for='fecha_actualizacion'>Fecha de actualizacion:</label>";
-        echo "<br>";
-        echo "<input type='date' id='fecha_actualizacion' name='fecha_actualizacion' value=''><br><br>";
-        echo "<br>";
         echo "<label>Género:</label>";
         echo "<select name='genero'>
                 <option value='02'>Masculino</option>
@@ -396,7 +387,6 @@
         // =========================================================================
         // CONDICIÓN PARA MOSTRAR EL ROL
         // =========================================================================
-        // Verifica si hay sesión y si el usuario logueado es Administrador ('01')
         if (isset($_SESSION['tipo_persona']) && $_SESSION['tipo_persona'] === '01') {
             echo "<label for='tipo_persona'>Tipo de Persona :</label>";
             echo '<select id="tipo_persona" name="tipo_persona">
@@ -405,7 +395,6 @@
                     <option value="03">Cliente</option>
                   </select>';
         } else {
-            // Para el público general, se asigna automáticamente '03' (Cliente) de manera oculta
             echo '<input type="hidden" id="tipo_persona" name="tipo_persona" value="03">';
         }
         
